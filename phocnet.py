@@ -53,3 +53,29 @@ class PHOCNet(nn.Module):
 		y = F.dropout(y, p=0.5, training=self.training)
 		y = self.fc7(y)
 		return y
+
+	def init_weights(self):
+        self.apply(PHOCNet._init_weights_he)
+
+
+    '''
+    @staticmethod
+    def _init_weights_he(m):
+        if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+            #nn.init.kaiming_normal(m.weight.data)
+            n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+            m.weight.data.normal_(0, (2. / n)**(1/2.0))
+            if hasattr(m, 'bias'):
+                nn.init.constant(m.bias.data, 0)
+    '''
+
+    @staticmethod
+    def _init_weights_he(m):
+        if isinstance(m, nn.Conv2d):
+            n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+            m.weight.data.normal_(0, (2. / n) ** (1 / 2.0))
+        if isinstance(m, nn.Linear):
+            n = m.out_features
+            m.weight.data.normal_(0, (2. / n) ** (1 / 2.0))
+            #nn.init.kaiming_normal(m.weight.data)
+            nn.init.constant(m.bias.data, 0)
